@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Http;
-using System.Web.Routing;
-using Oereb.Service.DataContracts;
+﻿using System.Web.Http;
 
 namespace Oereb.Service
 {
@@ -12,8 +6,11 @@ namespace Oereb.Service
     {
         protected void Application_Start()
         {
+            log4net.Config.XmlConfigurator.Configure();
+
             GlobalConfiguration.Configure(WebApiConfig.Register);
-            SettingsReader.ReadFromConfig();
+            Helper.v10.SettingsReader.ReadFromConfig();
+            Helper.v20.SettingsReader.ReadFromConfig();
             System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
         }
     }

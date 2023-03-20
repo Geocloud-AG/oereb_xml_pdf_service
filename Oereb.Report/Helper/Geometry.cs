@@ -33,7 +33,7 @@ namespace Oereb.Report.Helper
 
             graphic.Clear(Color.Transparent);
 
-            if (String.IsNullOrEmpty(geometryGml) )
+            if (String.IsNullOrEmpty(geometryGml))
             {
                 return bitmap;
             }
@@ -50,7 +50,7 @@ namespace Oereb.Report.Helper
 
             geometryGml = BufferGeomtry(geometryGml, offset * conversionFactor * width / 2055);
 
-            var gmlElement = RemoveAllNamespaces(geometryGml.Replace("gml:",""));
+            var gmlElement = RemoveAllNamespaces(geometryGml.Replace("gml:", ""));
 
             //var rings = gmlElement.XPathSelectElements($"/descendant::posList").ToList();
             var rings = gmlElement.XPathSelectElements($"/descendant::coordinates").ToList();
@@ -70,7 +70,7 @@ namespace Oereb.Report.Helper
 
                     content = content.Replace(",", " "); //other GML version
 
-                    var coords = content.Split(' ').Where(x=>!String.IsNullOrEmpty(x)).ToList();
+                    var coords = content.Split(' ').Where(x => !String.IsNullOrEmpty(x)).ToList();
 
                     var points = new List<PointF>();
 
@@ -79,7 +79,7 @@ namespace Oereb.Report.Helper
                         var point = new double[2];
 
                         point[0] = Convert.ToDouble(coords[i]);
-                        point[1] = Convert.ToDouble(coords[i+1]);
+                        point[1] = Convert.ToDouble(coords[i + 1]);
 
                         var pX = (float)((point[0] - extent[0]) / conversionFactor);
                         var pY = (float)((extent[3] - point[1]) / conversionFactor);
@@ -90,7 +90,7 @@ namespace Oereb.Report.Helper
                     if (colorIndex == 0)
                     {
                         Color colorBg = ColorTranslator.FromHtml("#bbffffff"); // TODO: another config value candidate
-                        var penBg = new Pen(colorBg, (int) Math.Round(15 * width / 2055d, 0)); // 15
+                        var penBg = new Pen(colorBg, (int)Math.Round(15 * width / 2055d, 0)); // 15
                         graphic.DrawLines(penBg, points.ToArray());
                     }
                     else
@@ -101,7 +101,7 @@ namespace Oereb.Report.Helper
                     }
 
                     graphic.Flush();
-                }                
+                }
             }
 
             bitmap = (Bitmap)AddScalebarAndOrientation(bitmap, extent, width, height, 0.2, (int)Math.Round(width / 70d, 0));
@@ -111,6 +111,127 @@ namespace Oereb.Report.Helper
             return bitmap;
         }
 
+
+        public static Image RasterizeGeometryFromMultiSurfaceType(Service.DataContracts.Model.v20.MultiSurfaceType multiSurfaceType, double[] extent, int width, int height, int offset = 0)
+        {
+            var bitmap = new Bitmap(width, height);
+            Graphics graphic = Graphics.FromImage(bitmap);
+
+            graphic.Clear(Color.Transparent);
+
+            if (multiSurfaceType?.surface == null)
+            {
+                return bitmap;
+            }
+
+            var surface = multiSurfaceType.surface;
+
+            var srs = "2056";
+            if (!string.IsNullOrEmpty(multiSurfaceType?.surface.epsg))
+            {
+                srs = multiSurfaceType?.surface.epsg; // Quickfix URI EPSG:3857
+            }
+
+            double conversionFactor = (extent[2] - extent[0]) / width; //scale is the same in both directions, meter per pixel
+
+            // old surface = BufferGeomtry(surface, offset * conversionFactor);
+
+            var rings = new List<Service.DataContracts.Model.v20.BoundaryType>();
+            if (surface.exterior != null)
+            {
+                rings.AddRange(surface.exterior.ToList());
+            }
+            if (surface.interior != null)
+            {
+                rings.AddRange(surface.interior.ToList());
+            }
+
+            if (!rings.Any())
+            {
+                return bitmap;
+            }
+
+            //draws first the transparent color and then the redline color (better results with multipart features)
+
+            for (int colorIndex = 0; colorIndex < 2; colorIndex++)
+            {
+                foreach (var ring in rings)
+                {
+                    var polyline = ring.polyline;
+
+                    var coords = new List<object>();
+                    coords.Add(polyline.coord); // CoordType
+                    coords.AddRange(polyline.Items); // ArcSegmentType, CoordType, LineSegmentType
+
+                    var points = new List<PointF>();
+
+                    foreach (var coord in coords)
+                    {
+                        var point = new double[2];
+
+                        if (coord is Service.DataContracts.Model.v20.CoordType)
+                        {
+                            var coordType = coord as Service.DataContracts.Model.v20.CoordType;
+
+                            point[0] = coordType.c1;
+                            point[1] = coordType.c2;
+
+                            var pX = (float)((point[0] - extent[0]) / conversionFactor);
+                            var pY = (float)((extent[3] - point[1]) / conversionFactor);
+
+                            points.Add(new PointF(pX, pY));
+                        }
+                        else if (coord is Service.DataContracts.Model.v20.ArcSegmentType)
+                        {
+                            var arcSegmentType = coord as Service.DataContracts.Model.v20.ArcSegmentType;
+
+                            point[0] = arcSegmentType.c1;
+                            point[1] = arcSegmentType.c2;
+
+                            var pX = (float)((point[0] - extent[0]) / conversionFactor);
+                            var pY = (float)((extent[3] - point[1]) / conversionFactor);
+
+                            points.Add(new PointF(pX, pY));
+                        }
+                        else if (coord is Service.DataContracts.Model.v20.LineSegmentType)
+                        {
+                            var lineSegmentType = coord as Service.DataContracts.Model.v20.LineSegmentType;
+
+                            point[0] = lineSegmentType.c1;
+                            point[1] = lineSegmentType.c2;
+
+                            var pX = (float)((point[0] - extent[0]) / conversionFactor);
+                            var pY = (float)((extent[3] - point[1]) / conversionFactor);
+
+                            points.Add(new PointF(pX, pY));
+                        }
+                    }
+
+                    if (colorIndex == 0)
+                    {
+                        Color colorBg = ColorTranslator.FromHtml("#bbffffff"); // TODO: another config value candidate
+                        var penBg = new Pen(colorBg, 15);
+                        graphic.DrawLines(penBg, points.ToArray());
+                    }
+                    else
+                    {
+                        Color color = ColorTranslator.FromHtml("#99e60000"); // TODO: another config value candidate
+                        var pen = new Pen(color, 9);
+                        graphic.DrawLines(pen, points.ToArray());
+                    }
+
+                    graphic.Flush();
+                }
+            }
+
+            bitmap = (Bitmap)AddScalebarAndOrientation(bitmap, extent, width, height, 0.2, 30); //, srs);
+
+            // bitmap.Save(@"c:\temp\testrasterize6.png", System.Drawing.Imaging.ImageFormat.Png);
+
+            return bitmap;
+        }
+
+
         public static Image AddScalebarAndOrientation(Image image, double[] extent, int width, int height, double maxPercent, int offset)
         {
             Graphics graphic = Graphics.FromImage(image);
@@ -119,16 +240,20 @@ namespace Oereb.Report.Helper
             graphic.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
             //todo replace staic image pathes
-            var northArrow = Image.FromFile(Path.Combine(GetRootPath(),"Image/report_NorthArrow.png"));
+            var northArrow = Image.FromFile(Path.Combine(GetRootPath(), "Image/report_NorthArrow.png"));
             var scalebar = Image.FromFile(Path.Combine(GetRootPath(), "Image/report_Scalebar.png"));
 
-            var distanceH = (extent[2] - extent[0]);        
-            var meterPerPixel = distanceH/width;
+            var distanceH = (extent[2] - extent[0]);
+            var meterPerPixel = distanceH / width;
 
-            var widthScaleBarMeter = Math.Round(distanceH * maxPercent / 10, 0)*10;
-            var widthScalebarPixel = (int)(widthScaleBarMeter /meterPerPixel);
-            var heightScalebarPixel = (int)((double)widthScalebarPixel /scalebar.Width*scalebar.Height);
-            var fontheight = (int) Math.Round(width/58d, 0);
+            var widthScaleBarMeter = Math.Round(distanceH * maxPercent / 10, 0) * 10;
+            var widthScalebarPixel = (int)(widthScaleBarMeter / meterPerPixel);
+            var heightScalebarPixel = (int)((double)widthScalebarPixel / scalebar.Width * scalebar.Height);
+            var fontheight = (int)Math.Round(width / 58d, 0);
+            if (fontheight == 0)
+            {
+                fontheight = 1;
+            }
 
             var lrX = (int)0;
             var lrY = (int)height;
@@ -147,25 +272,25 @@ namespace Oereb.Report.Helper
             AddText(graphic, $"{widthScaleBarMeter:0#} m", font, stringFormat, new PointF() { X = (float)(lrX + offset + widthScalebarPixel), Y = (float)(lrY - offset) });
 
             graphic.DrawImage(
-                scalebar, 
+                scalebar,
                 new Rectangle(
-                    lrX + offset, 
-                    lrY - offset- fontheight- heightScalebarPixel, 
-                    widthScalebarPixel, 
+                    lrX + offset,
+                    lrY - offset - fontheight - heightScalebarPixel,
+                    widthScalebarPixel,
                     heightScalebarPixel
                 )
             );
 
-            var widthNorthArrowPixel = (int)(widthScalebarPixel/5);
+            var widthNorthArrowPixel = (int)(widthScalebarPixel / 5);
             var heightNorthArrowPixel = (int)((double)widthNorthArrowPixel / (double)northArrow.Width * northArrow.Height);
 
             graphic.DrawImage(
-                northArrow, 
+                northArrow,
                 new Rectangle
                 (
-                    lrX + offset + widthScalebarPixel / 2 - widthNorthArrowPixel / 2, 
-                    lrY - offset - fontheight - heightScalebarPixel-offset- heightNorthArrowPixel, 
-                    widthNorthArrowPixel, 
+                    lrX + offset + widthScalebarPixel / 2 - widthNorthArrowPixel / 2,
+                    lrY - offset - fontheight - heightScalebarPixel - offset - heightNorthArrowPixel,
+                    widthNorthArrowPixel,
                     heightNorthArrowPixel
                 )
             );
@@ -174,10 +299,10 @@ namespace Oereb.Report.Helper
             return image;
         }
 
-        public static void AddText(Graphics graphic,string value, Font font, StringFormat stringFormat, PointF pointF)
+        public static void AddText(Graphics graphic, string value, Font font, StringFormat stringFormat, PointF pointF)
         {
             var graphicsPath = new GraphicsPath();
-            var outline = new Pen(Brushes.White, 8){LineJoin = LineJoin.Round};
+            var outline = new Pen(Brushes.White, 8) { LineJoin = LineJoin.Round };
 
             using (Brush foreBrush = new SolidBrush(Color.Black))
             {

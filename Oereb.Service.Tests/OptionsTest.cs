@@ -5,6 +5,8 @@ using Oereb.Service.DataContracts;
 using System.Collections.Generic;
 using System.Linq;
 using Oereb.Service.Tests.Helper;
+using Oereb.Service.DataContracts.Model.v10;
+using Oereb.Service.Helper.v10;
 
 namespace Oereb.Service.Tests
 {

@@ -103,3 +103,4 @@ ClientBin/
 node_modules/
 
 !Oereb.Service/gdal/*
+/Oereb.Service/License/Aspose.Words.lic

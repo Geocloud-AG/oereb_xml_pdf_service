@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns="http://schemas.geo.admin.ch/swisstopo/OeREBK/15/Extract"
+  targetNamespace="http://schemas.geo.admin.ch/swisstopo/OeREBK/15/Extract"
+  elementFormDefault="qualified" attributeFormDefault="unqualified"
+  version="0.8"
+>
+
+  <xsd:simpleType name="FlavourType">
+    <xsd:restriction base="xsd:token">
+      <xsd:pattern value="REDUCED|FULL|EMBEDDABLE|(ch\.[A-Z]{2}\.[a-zA-Z][a-zA-Z0-9]*)|(fl\.[a-zA-Z][a-zA-Z0-9]*)"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:element name="GetExtractByIdResponse" type="GetExtractByIdResponseType"/>
+  <xsd:complexType name="GetExtractByIdResponseType">
+    <xsd:sequence>
+      <xsd:choice>
+        <xsd:element name="embeddable">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="cadasterState" type="xsd:dateTime"/>
+              <xsd:element name="cadasterOrganisationName" type="xsd:normalizedString"/>
+              <xsd:element name="dataownerNameCadastralSurveying" type="xsd:normalizedString"/> 
+              <xsd:element name="transferFromSourceCadastralSurveying" type="xsd:dateTime"/>
+              <xsd:element name="datasource">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="topic" type="Theme"/>
+                    <xsd:element name="dataownerName" type="xsd:normalizedString"/> 
+                    <xsd:element name="transferFromSource" type="xsd:dateTime"/>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+              <xsd:element name="pdf" type="xsd:base64Binary"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="Extract" type="xsd:string"></xsd:element>
+      </xsd:choice>
+    </xsd:sequence>  
+  </xsd:complexType>
+  
+  <xsd:element name="GetEGRIDResponse" type="GetEGRIDResponseType"/>
+  <xsd:complexType name="GetEGRIDResponseType">
+    <xsd:sequence minOccurs="1" maxOccurs="unbounded">
+      <xsd:element name="egrid" type="xsd:token"/>
+      <xsd:element name="number" type="xsd:token"/>
+      <xsd:element name="identDN" type="xsd:token"/>
+    </xsd:sequence>    
+  </xsd:complexType>
+
+  <xsd:element name="GetCapabilitiesResponse" type="GetCapabilitiesResponseType"/>
+  <xsd:complexType name="GetCapabilitiesResponseType">
+    <xsd:sequence>
+      <xsd:element name="topic" type="Theme" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="municipality" type="MunicipalityCode" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="flavour" type="FlavourType" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="language" type="xsd:token" minOccurs="1" maxOccurs="unbounded"/>
+      <xsd:element name="crs" type="xsd:token" minOccurs="1" maxOccurs="unbounded"/>
+    </xsd:sequence>    
+  </xsd:complexType>
+  
+    <xsd:complexType  name="Theme">
+    <xsd:sequence>
+      <xsd:element name="Code" type="ThemeCode">
+      </xsd:element>
+      <xsd:element name="Text" type="LocalisedText">
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="ThemeCode">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="LandUsePlans|MotorwaysProjectPlaningZones|MotorwaysBuildingLines|RailwaysProjectPlanningZones|RailwaysBuildingLines|AirportsProjectPlanningZones|AirportsBuildingLines|AirportsSecurityZonePlans|ContaminatedSites|ContaminatedMilitarySites|ContaminatedCivilAviationSites|ContaminatedPublicTransportSites|GroundwaterProtectionZones|GroundwaterProtectionSites|NoiseSensitivityLevels|ForestPerimeters|ForestDistanceLines|(ch\.[A-Z]{2}\.[a-zA-Z][a-zA-Z0-9]*)|(ch\.[0-9]{4}\.[a-zA-Z][a-zA-Z0-9]*)|(fl\.[a-zA-Z][a-zA-Z0-9]*)"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="LanguageCode">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="de"/>
+      <xsd:enumeration value="fr"/>
+      <xsd:enumeration value="it"/>
+      <xsd:enumeration value="rm"/>
+      <xsd:enumeration value="en"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType  name="LocalisedText">
+    <xsd:sequence>
+      <xsd:element name="Language" type="LanguageCode" minOccurs="0"/>
+      <xsd:element name="Text">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:normalizedString">
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+    <xsd:simpleType name="MunicipalityCode">
+    <xsd:restriction base="xsd:integer">
+      <xsd:minInclusive value="1"/>
+      <xsd:maxInclusive value="9999"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+</xsd:schema>
+

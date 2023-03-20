@@ -43,36 +43,70 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExtException.cs" />
-    <Compile Include="Model\10\ExtractData.cs">
+    <Compile Include="Model\v10\ExtractData.cs">
       <DependentUpon>ExtractData.xsd</DependentUpon>
       <SubType>code</SubType>
     </Compile>
-    <Compile Include="Model\Extract.cs">
+    <Compile Include="Model\v10\Extract.cs">
       <DependentUpon>Extract.xsd</DependentUpon>
     </Compile>
     <Compile Include="Model\Gml\gml.cs">
       <DependentUpon>gml.xsd</DependentUpon>
     </Compile>
-    <Compile Include="Model\Versioning.cs">
+    <Compile Include="Model\v10\Versioning.cs">
       <DependentUpon>Versioning.xsd</DependentUpon>
     </Compile>
-    <Compile Include="Options.cs" />
+    <Compile Include="Model\v20\Extract.cs">
+      <DependentUpon>Extract.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Model\v20\ExtractData.cs">
+      <DependentUpon>ExtractData.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Model\v20\geometry.cs">
+      <DependentUpon>geometry.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Model\v20\Options.cs" />
+    <Compile Include="Model\v20\Settings.cs" />
+    <Compile Include="Model\v20\Versioning.cs">
+      <DependentUpon>Versioning.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Model\v20\xmldsig-core-schema.cs">
+      <DependentUpon>xmldsig-core-schema.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Model\v10\Options.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Settings.cs" />
+    <Compile Include="Model\v10\Settings.cs" />
     <Compile Include="Xml.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <None Include="Model\10\ExtractData.xsd">
+    <None Include="Model\v10\ExtractData.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Model\Extract.xsd">
+    <None Include="Model\v10\Extract.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Model\Gml\gml.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Model\Versioning.xsd">
+    <None Include="Model\v10\Versioning.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Model\v20\extract.json" />
+    <None Include="Model\v20\Extract.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Model\v20\extractdata.json" />
+    <None Include="Model\v20\ExtractData.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Model\v20\geometry.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Model\v20\versioning.json" />
+    <None Include="Model\v20\Versioning.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Model\v20\xmldsig-core-schema.xsd">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>

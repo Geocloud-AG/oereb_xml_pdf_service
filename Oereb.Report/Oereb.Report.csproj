@@ -38,9 +38,12 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Aspose.Words, Version=15.6.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
+      <HintPath>..\packages\Aspose.Words.15.6.0\lib\net3.5-client\Aspose.Words.dll</HintPath>
+    </Reference>
     <Reference Include="DocumentFormat.OpenXml, Version=2.9.0.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
-      <HintPath>..\packages\DocumentFormat.OpenXml.2.9.0\lib\net40\DocumentFormat.OpenXml.dll</HintPath>
-      <Private>True</Private>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Telerik.Reporting.10.2.16.1026\lib\Net45\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
     <Reference Include="gdalconst_csharp, Version=1.0.5980.33660, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
       <HintPath>..\packages\geocentrale-GDAL.1.10.7\lib\net45\gdalconst_csharp.dll</HintPath>
@@ -66,9 +69,8 @@
       <HintPath>..\packages\iTextSharp.5.5.6\lib\itextsharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="log4net, Version=2.0.14.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.14\lib\net45\log4net.dll</HintPath>
     </Reference>
     <Reference Include="mapscript_csharp, Version=1.0.5980.33915, Culture=neutral, PublicKeyToken=80087771edd02926, processorArchitecture=MSIL">
       <HintPath>..\packages\geocentrale-GDAL.1.10.7\lib\net45\mapscript_csharp.dll</HintPath>
@@ -94,7 +96,15 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Telerik.Reporting, Version=10.2.16.1025, Culture=neutral, PublicKeyToken=a9d7983dfcc261be" />
+    <Reference Include="Telerik.Reporting">
+      <HintPath>..\packages\Telerik.Reporting.10.2.16.1026\lib\Net45\Telerik.Reporting.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Reporting.OpenXmlRendering">
+      <HintPath>..\packages\Telerik.Reporting.10.2.16.1026\lib\Net45\Telerik.Reporting.OpenXmlRendering.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Reporting.XpsRendering">
+      <HintPath>..\packages\Telerik.Reporting.10.2.16.1026\lib\Net45\Telerik.Reporting.XpsRendering.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -108,44 +118,74 @@
     <Compile Include="Helper\Geometry.cs" />
     <Compile Include="Helper\HImage.cs" />
     <Compile Include="Helper\Pdf.cs" />
-    <Compile Include="Helper\LocalisedMText.cs" />
-    <Compile Include="Helper\LocalisedText.cs" />
-    <Compile Include="Helper\LocalisedUri.cs" />
+    <Compile Include="Helper\v10\LocalisedMText.cs" />
+    <Compile Include="Helper\v10\LocalisedText.cs" />
+    <Compile Include="Helper\v10\LocalisedUri.cs" />
     <Compile Include="Helper\PreProcessing.cs" />
     <Compile Include="Helper\Report.cs" />
-    <Compile Include="Helper\Wms.cs" />
+    <Compile Include="Helper\v10\Wms.cs" />
+    <Compile Include="Helper\v20\LocalisedMText.cs" />
+    <Compile Include="Helper\v20\LocalisedText.cs" />
+    <Compile Include="Helper\v20\LocalisedUri.cs" />
+    <Compile Include="Helper\v20\Wms.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReportAppendix.cs">
+    <Compile Include="v10\ReportAppendix.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ReportAppendix.Designer.cs">
+    <Compile Include="v10\ReportAppendix.Designer.cs">
       <DependentUpon>ReportAppendix.cs</DependentUpon>
     </Compile>
-    <Compile Include="ReportBuilder.cs" />
-    <Compile Include="ReportExtract.cs" />
-    <Compile Include="ReportToc.cs">
+    <Compile Include="v10\ReportBuilder.cs" />
+    <Compile Include="v10\ReportExtract.cs" />
+    <Compile Include="v10\ReportToc.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ReportToc.Designer.cs">
+    <Compile Include="v10\ReportToc.Designer.cs">
       <DependentUpon>ReportToc.cs</DependentUpon>
     </Compile>
-    <Compile Include="ReportBody.cs">
+    <Compile Include="v10\ReportBody.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ReportBody.Designer.cs">
+    <Compile Include="v10\ReportBody.Designer.cs">
       <DependentUpon>ReportBody.cs</DependentUpon>
     </Compile>
-    <Compile Include="ReportGlossary.cs">
+    <Compile Include="v10\ReportGlossary.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ReportGlossary.Designer.cs">
+    <Compile Include="v10\ReportGlossary.Designer.cs">
       <DependentUpon>ReportGlossary.cs</DependentUpon>
     </Compile>
-    <Compile Include="ReportTitle.cs">
+    <Compile Include="v10\ReportTitle.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ReportTitle.Designer.cs">
+    <Compile Include="v10\ReportTitle.Designer.cs">
       <DependentUpon>ReportTitle.cs</DependentUpon>
+    </Compile>
+    <Compile Include="v20\ReportBody.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="v20\ReportBody.Designer.cs">
+      <DependentUpon>ReportBody.cs</DependentUpon>
+    </Compile>
+    <Compile Include="v20\ReportBuilder.cs" />
+    <Compile Include="v20\ReportExtract.cs" />
+    <Compile Include="v20\ReportGlossary.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="v20\ReportGlossary.Designer.cs">
+      <DependentUpon>ReportGlossary.cs</DependentUpon>
+    </Compile>
+    <Compile Include="v20\ReportTitle.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="v20\ReportTitle.Designer.cs">
+      <DependentUpon>ReportTitle.cs</DependentUpon>
+    </Compile>
+    <Compile Include="v20\ReportToc.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="v20\ReportToc.Designer.cs">
+      <DependentUpon>ReportToc.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -156,46 +196,80 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\licenses.licx" />
-    <EmbeddedResource Include="ReportAppendix.resx">
+    <EmbeddedResource Include="v10\ReportAppendix.resx">
       <DependentUpon>ReportAppendix.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ReportBody.fr.resx">
+    <EmbeddedResource Include="v10\ReportBody.fr.resx">
       <DependentUpon>ReportBody.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ReportBody.it.resx">
+    <EmbeddedResource Include="v10\ReportBody.it.resx">
       <DependentUpon>ReportBody.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ReportGlossary.fr.resx">
-      <DependentUpon>ReportGlossary.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ReportGlossary.it.resx">
-      <DependentUpon>ReportGlossary.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ReportTitle.fr.resx">
-      <DependentUpon>ReportTitle.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ReportTitle.it.resx">
-      <DependentUpon>ReportTitle.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ReportToc.fr.resx">
-      <DependentUpon>ReportToc.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ReportToc.it.resx">
-      <DependentUpon>ReportToc.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ReportToc.resx">
-      <DependentUpon>ReportToc.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ReportBody.resx">
+    <EmbeddedResource Include="v10\ReportBody.resx">
       <DependentUpon>ReportBody.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="ReportGlossary.resx">
+    <EmbeddedResource Include="v10\ReportGlossary.fr.resx">
       <DependentUpon>ReportGlossary.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ReportTitle.resx">
+    <EmbeddedResource Include="v10\ReportGlossary.it.resx">
+      <DependentUpon>ReportGlossary.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="v10\ReportGlossary.resx">
+      <DependentUpon>ReportGlossary.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="v10\ReportTitle.fr.resx">
       <DependentUpon>ReportTitle.cs</DependentUpon>
-      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="v10\ReportTitle.it.resx">
+      <DependentUpon>ReportTitle.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="v10\ReportTitle.resx">
+      <DependentUpon>ReportTitle.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="v10\ReportToc.fr.resx">
+      <DependentUpon>ReportToc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="v10\ReportToc.it.resx">
+      <DependentUpon>ReportToc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="v10\ReportToc.resx">
+      <DependentUpon>ReportToc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="v20\ReportBody.fr.resx">
+      <DependentUpon>ReportBody.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="v20\ReportBody.it.resx">
+      <DependentUpon>ReportBody.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="v20\ReportBody.resx">
+      <DependentUpon>ReportBody.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="v20\ReportGlossary.fr.resx">
+      <DependentUpon>ReportGlossary.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="v20\ReportGlossary.it.resx">
+      <DependentUpon>ReportGlossary.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="v20\ReportGlossary.resx">
+      <DependentUpon>ReportGlossary.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="v20\ReportTitle.fr.resx">
+      <DependentUpon>ReportTitle.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="v20\ReportTitle.it.resx">
+      <DependentUpon>ReportTitle.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="v20\ReportTitle.resx">
+      <DependentUpon>ReportTitle.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="v20\ReportToc.fr.resx">
+      <DependentUpon>ReportToc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="v20\ReportToc.it.resx">
+      <DependentUpon>ReportToc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="v20\ReportToc.resx">
+      <DependentUpon>ReportToc.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
