@@ -151,7 +151,7 @@
     <value>= Fields.Extract.RealEstate.MunicipalityName + " ("+ Fields.Extract.RealEstate.MunicipalityCode+")"</value>
   </data>
   <data name="SubunitOfLandRegister.Value" xml:space="preserve">
-    <value>Grundbuchkreis</value>
+    <value>Untereinheit des Grundbuches</value>
   </data>
   <data name="SubunitOfLandRegisterValue.Value" xml:space="preserve">
     <value>= Fields.Extract.RealEstate.SubunitOfLandRegister</value>
