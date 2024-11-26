@@ -981,9 +981,13 @@ namespace Oereb.Report.v20
                     moreinformations.Add(new Document() { Abbrevation = "", Level = 0, OfficialNumber = "-", OfficialTitle = "", Title = "", Url = "" });
                 }
 
-                LegalProvisions.AddRange(legalProvisions.OrderBy(x => x.Sort));
-                Documents.AddRange(documents.OrderBy(x => x.Sort));
-                MoreInformations.AddRange(moreinformations.OrderBy(x => x.Sort));
+                legalProvisions.Sort((x, y) => OrderBySortProperty(x.Sort, y.Sort));
+                documents.Sort((x, y) => OrderBySortProperty(x.Sort, y.Sort));
+                moreinformations.Sort((x, y) => OrderBySortProperty(x.Sort, y.Sort));
+
+                LegalProvisions.AddRange(legalProvisions);
+                Documents.AddRange(documents);
+                MoreInformations.AddRange(moreinformations);
 
                 /*
                 #region Anhaenge
@@ -1010,6 +1014,30 @@ namespace Oereb.Report.v20
 
                 #endregion
                 */
+            }
+
+            protected int OrderBySortProperty(string first, string second)
+            {
+                var firstParts = first.Split(';');
+                var secondParts = second.Split(';');
+
+                if (int.TryParse(firstParts[0], out int firstIndex) && int.TryParse(secondParts[0], out int secondIndex))
+                {
+                    var compared = firstIndex.CompareTo(secondIndex);
+                    if (compared != 0)
+                    {
+                        return compared;
+                    }
+                }
+
+                try
+                {
+                    return first.Substring(first.IndexOf(';')).CompareTo(first.Substring(second.IndexOf(";")));
+                }
+                catch
+                {
+                    return first.CompareTo(second);
+                }
             }
 
             protected byte[] GetImageAsBytes(object data)
