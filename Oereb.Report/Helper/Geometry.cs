@@ -60,48 +60,34 @@ namespace Oereb.Report.Helper
                 return bitmap;
             }
 
-            //draws first the transparent color and then the redline color (better results with multipart features)
+            Color color = ColorTranslator.FromHtml("#99e60000"); // TODO: another config value candidate
+            var pen = new Pen(color, (int)Math.Round(14 * width / 2055d, 0)); // 14
 
-            for (int colorIndex = 0; colorIndex < 2; colorIndex++)
+            foreach (var ring in rings)
             {
-                foreach (var ring in rings)
+                var content = ring.Value.ToString();
+
+                content = content.Replace(",", " "); //other GML version
+
+                var coords = content.Split(' ').Where(x => !String.IsNullOrEmpty(x)).ToList();
+
+                var points = new List<PointF>();
+
+                for (int i = 0; i < coords.Count; i += 2)
                 {
-                    var content = ring.Value.ToString();
+                    var point = new double[2];
 
-                    content = content.Replace(",", " "); //other GML version
+                    point[0] = Convert.ToDouble(coords[i]);
+                    point[1] = Convert.ToDouble(coords[i + 1]);
 
-                    var coords = content.Split(' ').Where(x => !String.IsNullOrEmpty(x)).ToList();
+                    var pX = (float)((point[0] - extent[0]) / conversionFactor);
+                    var pY = (float)((extent[3] - point[1]) / conversionFactor);
 
-                    var points = new List<PointF>();
-
-                    for (int i = 0; i < coords.Count; i += 2)
-                    {
-                        var point = new double[2];
-
-                        point[0] = Convert.ToDouble(coords[i]);
-                        point[1] = Convert.ToDouble(coords[i + 1]);
-
-                        var pX = (float)((point[0] - extent[0]) / conversionFactor);
-                        var pY = (float)((extent[3] - point[1]) / conversionFactor);
-
-                        points.Add(new PointF(pX, pY));
-                    }
-
-                    if (colorIndex == 0)
-                    {
-                        Color colorBg = ColorTranslator.FromHtml("#bbffffff"); // TODO: another config value candidate
-                        var penBg = new Pen(colorBg, (int)Math.Round(15 * width / 2055d, 0)); // 15
-                        graphic.DrawLines(penBg, points.ToArray());
-                    }
-                    else
-                    {
-                        Color color = ColorTranslator.FromHtml("#99e60000"); // TODO: another config value candidate
-                        var pen = new Pen(color, (int)Math.Round(9 * width / 2055d, 0)); // 9
-                        graphic.DrawLines(pen, points.ToArray());
-                    }
-
-                    graphic.Flush();
+                    points.Add(new PointF(pX, pY));
                 }
+
+                graphic.DrawLines(pen, points.ToArray());
+                graphic.Flush();
             }
 
             bitmap = (Bitmap)AddScalebarAndOrientation(bitmap, extent, width, height, 0.2, (int)Math.Round(width / 70d, 0));
@@ -151,77 +137,63 @@ namespace Oereb.Report.Helper
                 return bitmap;
             }
 
-            //draws first the transparent color and then the redline color (better results with multipart features)
+            Color color = ColorTranslator.FromHtml("#99e60000"); // TODO: another config value candidate
+            var pen = new Pen(color, 14);
 
-            for (int colorIndex = 0; colorIndex < 2; colorIndex++)
+            foreach (var ring in rings)
             {
-                foreach (var ring in rings)
+                var polyline = ring.polyline;
+
+                var coords = new List<object>();
+                coords.Add(polyline.coord); // CoordType
+                coords.AddRange(polyline.Items); // ArcSegmentType, CoordType, LineSegmentType
+
+                var points = new List<PointF>();
+
+                foreach (var coord in coords)
                 {
-                    var polyline = ring.polyline;
+                    var point = new double[2];
 
-                    var coords = new List<object>();
-                    coords.Add(polyline.coord); // CoordType
-                    coords.AddRange(polyline.Items); // ArcSegmentType, CoordType, LineSegmentType
-
-                    var points = new List<PointF>();
-
-                    foreach (var coord in coords)
+                    if (coord is Service.DataContracts.Model.v20.CoordType)
                     {
-                        var point = new double[2];
+                        var coordType = coord as Service.DataContracts.Model.v20.CoordType;
 
-                        if (coord is Service.DataContracts.Model.v20.CoordType)
-                        {
-                            var coordType = coord as Service.DataContracts.Model.v20.CoordType;
+                        point[0] = coordType.c1;
+                        point[1] = coordType.c2;
 
-                            point[0] = coordType.c1;
-                            point[1] = coordType.c2;
+                        var pX = (float)((point[0] - extent[0]) / conversionFactor);
+                        var pY = (float)((extent[3] - point[1]) / conversionFactor);
 
-                            var pX = (float)((point[0] - extent[0]) / conversionFactor);
-                            var pY = (float)((extent[3] - point[1]) / conversionFactor);
-
-                            points.Add(new PointF(pX, pY));
-                        }
-                        else if (coord is Service.DataContracts.Model.v20.ArcSegmentType)
-                        {
-                            var arcSegmentType = coord as Service.DataContracts.Model.v20.ArcSegmentType;
-
-                            point[0] = arcSegmentType.c1;
-                            point[1] = arcSegmentType.c2;
-
-                            var pX = (float)((point[0] - extent[0]) / conversionFactor);
-                            var pY = (float)((extent[3] - point[1]) / conversionFactor);
-
-                            points.Add(new PointF(pX, pY));
-                        }
-                        else if (coord is Service.DataContracts.Model.v20.LineSegmentType)
-                        {
-                            var lineSegmentType = coord as Service.DataContracts.Model.v20.LineSegmentType;
-
-                            point[0] = lineSegmentType.c1;
-                            point[1] = lineSegmentType.c2;
-
-                            var pX = (float)((point[0] - extent[0]) / conversionFactor);
-                            var pY = (float)((extent[3] - point[1]) / conversionFactor);
-
-                            points.Add(new PointF(pX, pY));
-                        }
+                        points.Add(new PointF(pX, pY));
                     }
-
-                    if (colorIndex == 0)
+                    else if (coord is Service.DataContracts.Model.v20.ArcSegmentType)
                     {
-                        Color colorBg = ColorTranslator.FromHtml("#bbffffff"); // TODO: another config value candidate
-                        var penBg = new Pen(colorBg, 15);
-                        graphic.DrawLines(penBg, points.ToArray());
-                    }
-                    else
-                    {
-                        Color color = ColorTranslator.FromHtml("#99e60000"); // TODO: another config value candidate
-                        var pen = new Pen(color, 9);
-                        graphic.DrawLines(pen, points.ToArray());
-                    }
+                        var arcSegmentType = coord as Service.DataContracts.Model.v20.ArcSegmentType;
 
-                    graphic.Flush();
+                        point[0] = arcSegmentType.c1;
+                        point[1] = arcSegmentType.c2;
+
+                        var pX = (float)((point[0] - extent[0]) / conversionFactor);
+                        var pY = (float)((extent[3] - point[1]) / conversionFactor);
+
+                        points.Add(new PointF(pX, pY));
+                    }
+                    else if (coord is Service.DataContracts.Model.v20.LineSegmentType)
+                    {
+                        var lineSegmentType = coord as Service.DataContracts.Model.v20.LineSegmentType;
+
+                        point[0] = lineSegmentType.c1;
+                        point[1] = lineSegmentType.c2;
+
+                        var pX = (float)((point[0] - extent[0]) / conversionFactor);
+                        var pY = (float)((extent[3] - point[1]) / conversionFactor);
+
+                        points.Add(new PointF(pX, pY));
+                    }
                 }
+
+                graphic.DrawLines(pen, points.ToArray());
+                graphic.Flush();
             }
 
             bitmap = (Bitmap)AddScalebarAndOrientation(bitmap, extent, width, height, 0.2, 30); //, srs);
